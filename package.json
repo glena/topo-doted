@@ -1,0 +1,16 @@
+{
+  "name": "topo-doted",
+  "version": "1.0.0",
+  "description": "Convert your topojson files to a collection of dots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPLv2",
+  "dependencies":{
+      "topojson": "1.6.19",
+      "lodash":"*",
+      "point-in-polygon":"*"
+  }
+}
