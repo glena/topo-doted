@@ -2,16 +2,17 @@
   "name": "topo-doted",
   "version": "1.0.0",
   "description": "Convert your topojson files to a collection of dots",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "GPLv2",
+  "author": "Germán Lena",
+  "license": "MIT",
+  "preferGlobal":true,
   "dependencies":{
-      "topojson": "1.6.19",
-      "d3":"3.5.5",
+      "topojson": "~1.6",
+      "d3":"~3.5",
       "lodash":"*",
-      "point-in-polygon":"*"
+      "point-in-polygon":"*",
+      "commander":"~2.8"
+  },
+  "bin": {
+    "topo-doted": "index.js"
   }
 }
