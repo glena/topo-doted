@@ -13,7 +13,7 @@ var projection = d3.geo.mercator()
     .scale(135 * height / 847)
     .translate([width / 2, height / 2]);
 
-fs.readFile('cur-world.json', processData);
+fs.readFile('russia.json', processData);
 
 function processData(err, data){
 
@@ -34,11 +34,26 @@ function processData(err, data){
     });
 }
 
+function getLat(point){
+    
+}
+function getLng(point){
+    
+}
+
 function countryPoints(geoPoints) {
 
     var top = null, bottom = null, left = null, right = null;
 
-    var points = _.map(geoPoints, function(p){return projection(p) });
+    geoPoints = _.filter(geoPoints, function(p){
+        return (Math.abs(p[0]) != 180) //we need to avoid edge cases
+    })
+
+    console.log(geoPoints)
+
+    var points = _.map(geoPoints, function(p){
+        return projection(p) 
+    });
 
     var lats = _.map(points, function(p){return p[0]});
     var lngs = _.map(points, function(p){return p[1]});
@@ -68,6 +83,21 @@ function countryPoints(geoPoints) {
             }
         }
     }
+
+    // points.forEach(function(p){
+    //     landPoints.push({
+    //                 lat:p[1],
+    //                 lng:p[0]
+    //             });
+    // })
+
+    // if (inside([ 650,254.5023430763393 ], points)) {
+    //     console.log('si');
+    // }
+    // else
+    // {
+    //     console.log('no')
+    // }
 
 
 }
