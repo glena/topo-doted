@@ -10,12 +10,7 @@ var svg = svgEl.append('g');
 var projection = d3.geo.mercator()
     .scale(135 * height / 847)
     .translate([width / 2, height / 2]);
-/*
-var projection = d3.geo.equirectangular()
-    .translate([width / 2, height / 2])
-    .scale(135 * height / 847)
-    .precision(.1);
-*/
+
 var path = d3.geo.path().projection(projection);
 
 svgEl.attr("width", width).attr("height", height);
@@ -46,3 +41,27 @@ function loadPoints() {
         		.attr('r',2);
     });
 }
+
+loadPoints();
+
+function highLightCities() {
+    var cities = [
+        [-58.381592,-34.603722], //Buenos Aires
+        [-73.935242,40.730610], //New York
+        [-3.707398,40.415363], //Madrid
+        [-0.140634,51.501476], //Londres
+        [151.209900,-33.865143], //Sydney
+        [37.620407,55.754093] //Moscow
+    ];
+
+    cities.forEach(function(c){ c.projection = topoDotedProjection(c) });
+
+    svg.selectAll('circles').data(cities).enter().append('circle')
+        .attr("cx", function(d) { return d.projection[0]; })
+                .attr("cy", function(d) { return d.projection[1]; })
+                .attr('fill', 'blue')
+                .attr('r',2);
+    
+}
+
+setTimeout(highLightCities,2000);

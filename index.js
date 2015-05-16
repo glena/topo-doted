@@ -6,6 +6,7 @@ try {
 	var topojson = require('topojson');
 	var _ = require('lodash');
 	var inside = require('point-in-polygon');
+	var projectionDumper = require('./lib/projection-dumper.js');
 
 	var countries = [];
 	var landPoints = [];
@@ -33,13 +34,15 @@ try {
 
 	    countries.forEach(countryPoints);  
 
-	    fs.writeFile("map/points.json", JSON.stringify(landPoints), function(err) {
+	    fs.writeFile("points.json", JSON.stringify(landPoints), function(err) {
 	        if(err) {
 	            return console.log(err);
 	        }
 
-	        console.log("The file was saved!");
+	        console.log("The points were saved! - points.json");
 	    });
+
+	    projectionDumper(config);
 	}
 
 	function getLat(point){ // Y = latitude
