@@ -1,48 +1,64 @@
 var fs = require('fs')
+var d3 = require('d3')
 var topojson = require('topojson')
 var _ = require('lodash')
 var countries = []
 var landPoints = []
 var inside = require('point-in-polygon');
+var gridSize = 5;
 
-fs.readFile('world-original.json', processData);
+var height = 1000, width = 1000;
+
+var projection = d3.geo.mercator()
+    .scale(135 * height / 847)
+    .translate([width / 2, height / 2]);
+
+fs.readFile('cur-world.json', processData);
 
 function processData(err, data){
 
-    var topo = JSON.parse(data)
+    var topo = JSON.parse(data);
 
-    features = topojson.feature(topo, topo.objects.countries)
+    features = topojson.feature(topo, topo.objects.countries);
 
     processFeatures(features);
 
-    countries.forEach(countryPoints);
+    countries.forEach(countryPoints);  
 
     fs.writeFile("map/points.json", JSON.stringify(landPoints), function(err) {
-    if(err) {
-        return console.log(err);
-    }
+        if(err) {
+            return console.log(err);
+        }
 
-    console.log("The file was saved!");
-});
+        console.log("The file was saved!");
+    });
 }
 
-function countryPoints(points) {
+function countryPoints(geoPoints) {
 
     var top = null, bottom = null, left = null, right = null;
 
-    var lats = _.map(points, function(p){return p[0]})
-    var lngs = _.map(points, function(p){return p[1]})
+    var points = _.map(geoPoints, function(p){return projection(p) });
 
-    top = _.max(lats)
-    bottom = _.min(lats)
+    var lats = _.map(points, function(p){return p[0]});
+    var lngs = _.map(points, function(p){return p[1]});
 
-    right = _.max(lngs)
-    left = _.min(lngs)
+    top = Math.ceil(_.max(lats));
+    bottom = Math.floor(_.min(lats));
+
+    right = Math.ceil(_.max(lngs));
+    left = Math.floor(_.min(lngs));
+
+    top = top + (top % gridSize)
+    bottom = bottom - (bottom % gridSize)
+
+    right = right + (right % gridSize)
+    left = left - (left % gridSize)
 
 
-    for (var a = bottom; a <= top; a =a+ 2) {
+    for (var a = bottom; a <= top; a =a + gridSize) {
 
-        for (var b = left; b <= right; b = b+ 2) {
+        for (var b = left; b <= right; b = b + gridSize) {
 
             if (inside([ a, b ], points)) {
                 landPoints.push({

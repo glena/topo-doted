@@ -1,6 +1,6 @@
 
-var width = 500
-, height = 500
+var width = 1000
+, height = 1000
 , data;
 
 var svgEl = d3.select(".map svg");
@@ -35,7 +35,7 @@ function loadPoints() {
     d3.json("points.json", function(error, points) {
         points.forEach(function(d){
 
-        d.projection = projection([d.lng, d.lat])
+            d.projection = [d.lng, d.lat];
 
         })
 
