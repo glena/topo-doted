@@ -34,15 +34,17 @@ try {
 
 	    countries.forEach(countryPoints);  
 
-	    fs.writeFile("points.json", JSON.stringify(landPoints), function(err) {
+	    fs.writeFile(config.outputDirectory + "/points.json", JSON.stringify(landPoints), function(err) {
 	        if(err) {
 	            return console.log(err);
 	        }
 
-	        console.log("The points were saved! - points.json");
+	        console.log("The points were saved! - "+config.outputDirectory+"/points.json");
 	    });
-
-	    projectionDumper(config);
+console.log(config.noProjection);
+	    if (!config.noProjection) {
+	    	projectionDumper(config);
+	    }
 	}
 
 	function getLat(point){ // Y = latitude
@@ -57,7 +59,7 @@ try {
 	    var top = null, bottom = null, left = null, right = null;
 
 	    geoPoints = _.filter(geoPoints, function(p){
-	        return (Math.abs(getLng(p)) != 180) //we need to avoid edge cases
+	        return (Math.abs(getLng(p)) < 180) //we need to avoid edge cases
 	    })
 
 	    var points = _.map(geoPoints, function(p){
