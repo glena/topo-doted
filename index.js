@@ -34,11 +34,11 @@ function processData(err, data){
     });
 }
 
-function getLat(point){
-    
+function getLat(point){ // Y = latitude
+    return point[1]
 }
-function getLng(point){
-    
+function getLng(point){ // X = longitude
+    return point[0]
 }
 
 function countryPoints(geoPoints) {
@@ -46,17 +46,15 @@ function countryPoints(geoPoints) {
     var top = null, bottom = null, left = null, right = null;
 
     geoPoints = _.filter(geoPoints, function(p){
-        return (Math.abs(p[0]) != 180) //we need to avoid edge cases
+        return (Math.abs(getLng(p)) != 180) //we need to avoid edge cases
     })
-
-    console.log(geoPoints)
 
     var points = _.map(geoPoints, function(p){
         return projection(p) 
     });
 
-    var lats = _.map(points, function(p){return p[0]});
-    var lngs = _.map(points, function(p){return p[1]});
+    var lats = _.map(points, getLat);
+    var lngs = _.map(points, getLng);
 
     top = Math.ceil(_.max(lats));
     bottom = Math.floor(_.min(lats));
@@ -70,36 +68,18 @@ function countryPoints(geoPoints) {
     right = right + (right % gridSize)
     left = left - (left % gridSize)
 
+    for (var lat = bottom; lat <= top; lat = lat + gridSize) {
+        for (var lng = left; lng <= right; lng = lng + gridSize) {
 
-    for (var a = bottom; a <= top; a =a + gridSize) {
-
-        for (var b = left; b <= right; b = b + gridSize) {
-
-            if (inside([ a, b ], points)) {
+            if (inside([ lng, lat ], points)) {
                 landPoints.push({
-                    lat:b,
-                    lng:a
+                    lat:lat,
+                    lng:lng
                 });
             }
+
         }
     }
-
-    // points.forEach(function(p){
-    //     landPoints.push({
-    //                 lat:p[1],
-    //                 lng:p[0]
-    //             });
-    // })
-
-    // if (inside([ 650,254.5023430763393 ], points)) {
-    //     console.log('si');
-    // }
-    // else
-    // {
-    //     console.log('no')
-    // }
-
-
 }
 
 function processFeatures(features) {
